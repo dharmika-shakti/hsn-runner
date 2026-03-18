@@ -1,3 +1,4 @@
+import puppeteer from 'puppeteer';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { writeFileSync, unlinkSync, appendFileSync } from 'fs';
@@ -7,10 +8,6 @@ import { tmpdir } from 'os';
 const execAsync = promisify(exec);
 
 const HSN_LOG_FILE = (process.env.HSN_LOG_FILE || '').trim();
-// Ensure Puppeteer uses a cache dir that exists in common deploy targets (e.g. Render).
-// This must be set before importing puppeteer, so we import puppeteer dynamically in main().
-process.env.PUPPETEER_CACHE_DIR =
-  process.env.PUPPETEER_CACHE_DIR || join(process.cwd(), '.cache', 'puppeteer');
 
 /** Log a stage message with timestamp; writes to console and optionally to HSN_LOG_FILE for PHP to fetch */
 function logStage(stage, message, isError = false) {
@@ -813,18 +810,6 @@ async function extractDealingGoodsServicesTable(page) {
 
 async function main() {
   logStage('INIT', 'Script started');
-  
-  // For Render deployment: resolve Chromium path from @sparticuz/chromium
-  let chromiumPath = undefined;
-  try {
-    const chromium = await import('@sparticuz/chromium');
-    chromiumPath = await chromium.executablePath();
-    logStage('CHROMIUM', `Using chromium from @sparticuz: ${chromiumPath}`);
-  } catch (e) {
-    logStage('CHROMIUM', '@sparticuz/chromium not available, using default Puppeteer behavior');
-  }
-  
-  const puppeteer = (await import('puppeteer')).default;
   const gstIn = process.argv[2];
   if (!gstIn) {
     logStage('ARGS', 'Missing GSTIN. Usage: node hsn-details.js <GSTIN>', true);
@@ -859,7 +844,6 @@ async function main() {
       defaultViewport: RUN_HEADLESS ? { width: 1280, height: 800 } : null,
       ignoreHTTPSErrors: true,
       protocolTimeout: 60000,
-      ...(chromiumPath && { executablePath: chromiumPath }),
     };
 
     logStage('BROWSER_LAUNCH', 'Launching Puppeteer browser...');

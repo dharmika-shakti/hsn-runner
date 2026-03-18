@@ -14,7 +14,6 @@ const { join } = require('path');
 
 const PORT = parseInt(process.env.HSN_RUNNER_PORT || '3070', 10);
 const SCRIPT_PATH = join(__dirname, 'hsn-details.js');
-const DEFAULT_PPTR_CACHE = join(process.cwd(), '.cache', 'puppeteer');
 
 function parseBody(req) {
   return new Promise((resolve, reject) => {
@@ -65,8 +64,6 @@ const server = http.createServer(async (req, res) => {
     HSN_CALLBACK_TOKEN: callback_token || process.env.HSN_CALLBACK_TOKEN || '',
     GST_SEARCH_URL: gst_search_url || process.env.GST_SEARCH_URL || 'https://services.gst.gov.in/services/searchtp',
     HSN_HEADLESS: '1',
-    // Force Puppeteer to use a cache dir inside the project (works on Render runtime).
-    PUPPETEER_CACHE_DIR: process.env.PUPPETEER_CACHE_DIR || DEFAULT_PPTR_CACHE,
   };
 
   const child = spawn('node', [SCRIPT_PATH, gstin], {
