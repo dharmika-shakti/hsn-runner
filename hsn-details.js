@@ -813,6 +813,17 @@ async function extractDealingGoodsServicesTable(page) {
 
 async function main() {
   logStage('INIT', 'Script started');
+  
+  // For Render deployment: resolve Chromium path from @sparticuz/chromium
+  let chromiumPath = undefined;
+  try {
+    const chromium = await import('@sparticuz/chromium');
+    chromiumPath = await chromium.executablePath();
+    logStage('CHROMIUM', `Using chromium from @sparticuz: ${chromiumPath}`);
+  } catch (e) {
+    logStage('CHROMIUM', '@sparticuz/chromium not available, using default Puppeteer behavior');
+  }
+  
   const puppeteer = (await import('puppeteer')).default;
   const gstIn = process.argv[2];
   if (!gstIn) {
@@ -828,15 +839,6 @@ async function main() {
       throw new Error('GST_SEARCH_URL environment variable is not set!');
     }
     logStage('ENV', 'Environment OK');
-
-    let executablePath;
-    try {
-      const chromium = await import('@sparticuz/chromium');
-      executablePath = await chromium.executablePath();
-    } catch (e) {
-      // Fallback: use puppeteer's default or system chrome
-      executablePath = undefined;
-    }
 
     const launchOptions = {
       headless: RUN_HEADLESS ? true : (MANUAL_CAPTCHA ? false : true),
@@ -857,7 +859,7 @@ async function main() {
       defaultViewport: RUN_HEADLESS ? { width: 1280, height: 800 } : null,
       ignoreHTTPSErrors: true,
       protocolTimeout: 60000,
-      ...(executablePath && { executablePath }),
+      ...(chromiumPath && { executablePath: chromiumPath }),
     };
 
     logStage('BROWSER_LAUNCH', 'Launching Puppeteer browser...');
