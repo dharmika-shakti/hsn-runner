@@ -829,6 +829,15 @@ async function main() {
     }
     logStage('ENV', 'Environment OK');
 
+    let executablePath;
+    try {
+      const chromium = await import('@sparticuz/chromium');
+      executablePath = await chromium.executablePath();
+    } catch (e) {
+      // Fallback: use puppeteer's default or system chrome
+      executablePath = undefined;
+    }
+
     const launchOptions = {
       headless: RUN_HEADLESS ? true : (MANUAL_CAPTCHA ? false : true),
       args: [
@@ -848,7 +857,7 @@ async function main() {
       defaultViewport: RUN_HEADLESS ? { width: 1280, height: 800 } : null,
       ignoreHTTPSErrors: true,
       protocolTimeout: 60000,
-      executablePath: '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome',
+      ...(executablePath && { executablePath }),
     };
 
     logStage('BROWSER_LAUNCH', 'Launching Puppeteer browser...');
