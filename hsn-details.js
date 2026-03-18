@@ -848,6 +848,7 @@ async function main() {
       defaultViewport: RUN_HEADLESS ? { width: 1280, height: 800 } : null,
       ignoreHTTPSErrors: true,
       protocolTimeout: 60000,
+      executablePath: '/opt/render/.cache/puppeteer/chrome/linux-127.0.6533.88/chrome-linux64/chrome',
     };
 
     logStage('BROWSER_LAUNCH', 'Launching Puppeteer browser...');
