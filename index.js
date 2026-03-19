@@ -63,14 +63,14 @@ const server = http.createServer(async (req, res) => {
     HSN_CALLBACK_URL: callback_url || process.env.HSN_CALLBACK_URL || '',
     HSN_CALLBACK_TOKEN: callback_token || process.env.HSN_CALLBACK_TOKEN || '',
     GST_SEARCH_URL: gst_search_url || process.env.GST_SEARCH_URL || 'https://services.gst.gov.in/services/searchtp',
-    HSN_HEADLESS: '1',
+    HSN_HEADLESS: '0',
   };
 
   const child = spawn('node', [SCRIPT_PATH, gstin], {
     env,
-    cwd: join(__dirname, '..'),
-    detached: true,
-    stdio: 'ignore',
+    cwd: __dirname,
+    detached: false,
+    stdio: 'inherit',
   });
   child.unref();
 
