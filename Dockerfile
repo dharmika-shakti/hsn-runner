@@ -1,20 +1,53 @@
-FROM node:20
+FROM debian:bookworm-slim
 
-# Install Xvfb, VNC, window manager and all Chrome dependencies
+# Install Node.js
+RUN apt-get update && \
+    apt-get install -y curl gnupg && \
+    curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    rm -rf /var/lib/apt/lists/*
+
+# Install Xvfb, VNC, window manager and dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     xvfb \
     x11-utils \
+    x11-common \
     openbox \
     tightvncserver \
     novnc \
     websockify \
-    x11-apps \
-    xterm \
     fonts-dejavu \
     ca-certificates \
-    chromium-browser \
-    chromium-sandbox && \
+    libasound2 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcairo2 \
+    libcups2 \
+    libdbus-1-3 \
+    libexpat1 \
+    libfontconfig1 \
+    libgbm1 \
+    libgdk-pixbuf2.0-0 \
+    libglib2.0-0 \
+    libgtk-3-0 \
+    libnspr4 \
+    libnss3 \
+    libpango-1.0-0 \
+    libpangocairo-1.0-0 \
+    libx11-6 \
+    libx11-xcb1 \
+    libxcb1 \
+    libxcomposite1 \
+    libxcursor1 \
+    libxdamage1 \
+    libxext6 \
+    libxfixes3 \
+    libxi6 \
+    libxrandr2 \
+    libxrender1 \
+    libxss1 \
+    libxtst6 && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
@@ -23,8 +56,8 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 
-# Install Chrome for Puppeteer (or use chromium if available)
-RUN npx puppeteer browsers install chrome || true
+# Install Chrome for Puppeteer
+RUN npx puppeteer browsers install chrome
 
 # Copy rest of the project
 COPY . .
