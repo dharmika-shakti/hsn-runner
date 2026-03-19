@@ -59,20 +59,31 @@ const server = http.createServer(async (req, res) => {
 
   const env = {
     ...process.env,
-    DISPLAY: ':99',
+    DISPLAY: process.env.DISPLAY || ':99',
     PROFILE_ID: String(profile_id || ''),
     HSN_CALLBACK_URL: callback_url || process.env.HSN_CALLBACK_URL || '',
     HSN_CALLBACK_TOKEN: callback_token || process.env.HSN_CALLBACK_TOKEN || '',
     GST_SEARCH_URL: gst_search_url || process.env.GST_SEARCH_URL || 'https://services.gst.gov.in/services/searchtp',
     HSN_HEADLESS: '0',
+    HSN_LOG_FILE: process.env.HSN_LOG_FILE || '/tmp/hsn-' + gstin + '.log',
   };
 
   const child = spawn('node', [SCRIPT_PATH, gstin], {
     env,
     cwd: __dirname,
-    detached: false,
-    stdio: 'inherit',
+    detached: true,
+    stdio: ['ignore', 'pipe', 'pipe'],
   });
+
+  // Capture any error output
+  child.stdout?.on('data', (data) => {
+    console.log(`[${gstin}] ${data}`);
+  });
+  
+  child.stderr?.on('data', (data) => {
+    console.error(`[${gstin}] ${data}`);
+  });
+
   child.unref();
 
   respond(res, 202, {

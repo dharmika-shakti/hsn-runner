@@ -1,10 +1,11 @@
 {
      "name": "hsn-runner",
      "version": "1.0.0",
+     "type": "module",
      "main": "index.js",
      "scripts": {
           "build": "apt-get update && apt-get install -y xvfb",
-          "start": "Xvfb :99 -screen 0 1024x768x24 & node index.js"
+          "start": "bash start.sh"
      },
      "dependencies": {
           "puppeteer": "^22.15.0"
