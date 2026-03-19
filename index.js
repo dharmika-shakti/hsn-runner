@@ -8,9 +8,12 @@
  * POST /run-hsn with JSON: { profile_id, gstin, callback_url, callback_token?, gst_search_url? }
  */
 
-const http = require('http');
-const { spawn } = require('child_process');
-const { join } = require('path');
+import http from 'http';
+import { spawn } from 'child_process';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const PORT = parseInt(process.env.HSN_RUNNER_PORT || '3070', 10);
 const SCRIPT_PATH = join(__dirname, 'hsn-details.js');
