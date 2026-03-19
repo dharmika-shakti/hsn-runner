@@ -59,6 +59,7 @@ const server = http.createServer(async (req, res) => {
 
   const env = {
     ...process.env,
+    DISPLAY: ':99',
     PROFILE_ID: String(profile_id || ''),
     HSN_CALLBACK_URL: callback_url || process.env.HSN_CALLBACK_URL || '',
     HSN_CALLBACK_TOKEN: callback_token || process.env.HSN_CALLBACK_TOKEN || '',

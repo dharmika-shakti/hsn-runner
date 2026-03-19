@@ -3,7 +3,8 @@
      "version": "1.0.0",
      "main": "index.js",
      "scripts": {
-          "start": "node index.js"
+          "build": "apt-get update && apt-get install -y xvfb",
+          "start": "Xvfb :99 -screen 0 1024x768x24 & node index.js"
      },
      "dependencies": {
           "puppeteer": "^22.15.0"
