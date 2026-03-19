@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: hsn-runner
+    runtime: docker
+    region: oregon
+    plan: starter
+    startCommand: bash start.sh
+    envVars:
+      - key: DISPLAY
+        value: ':99'
+

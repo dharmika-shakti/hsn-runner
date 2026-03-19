@@ -4,7 +4,6 @@
      "type": "module",
      "main": "index.js",
      "scripts": {
-          "build": "apt-get update && apt-get install -y xvfb",
           "start": "bash start.sh"
      },
      "dependencies": {
