@@ -844,7 +844,6 @@ async function main() {
       defaultViewport: RUN_HEADLESS ? { width: 1280, height: 800 } : null,
       ignoreHTTPSErrors: true,
       protocolTimeout: 60000,
-      executablePath: puppeteer.executablePath(),
     };
 
     logStage('BROWSER_LAUNCH', 'Launching Puppeteer browser...');
